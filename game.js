@@ -1069,7 +1069,7 @@ function startPreloader() {
     var i = idx++;
     var url = urls[i];
     var timedOut = false;
-    var t = setTimeout(function() { timedOut = true; done(); }, TIMEOUT);
+    var t = setTimeout(function() { done(); }, TIMEOUT);
     function done() {
       if (timedOut) return;
       clearTimeout(t);
