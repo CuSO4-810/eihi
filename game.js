@@ -1063,10 +1063,18 @@ function startPreloader() {
 
   function loadOne(url, cb) {
     if (url.indexOf(".mp3") !== -1) {
+      ensureAudio();
+      if (!audioCtx) { cb(); return; }
+      if (audioBufCache[url]) { cb(); return; }
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.responseType = "arraybuffer";
-      xhr.onload = function() { cb(); };
+      xhr.onload = function() {
+        audioCtx.decodeAudioData(xhr.response, function(buf) {
+          audioBufCache[url] = buf;
+          cb();
+        }, function() { cb(); });
+      };
       xhr.onerror = function() { cb(); };
       xhr.send();
     } else {
