@@ -1008,6 +1008,10 @@ function startPreloader() {
   var screen = document.getElementById("loading-screen");
   var game = document.getElementById("game");
 
+  var preloadBin = document.createElement("div");
+  preloadBin.style.display = "none";
+  document.body.appendChild(preloadBin);
+
   var urls = [];
   var seen = {};
   function add(url) { if (!seen[url]) { seen[url] = true; urls.push(url); } }
@@ -1053,6 +1057,7 @@ function startPreloader() {
   }
 
   function finish() {
+    preloadBin.remove();
     screen.style.display = "none";
     game.style.display = "block";
     bgImg.src = imgPath("教室.png");
@@ -1078,10 +1083,11 @@ function startPreloader() {
       xhr.onerror = function() { cb(); };
       xhr.send();
     } else {
-      var img = new Image();
+      var img = document.createElement("img");
       img.onload = function() { cb(); };
       img.onerror = function() { cb(); };
       img.src = url;
+      preloadBin.appendChild(img);
     }
   }
 
