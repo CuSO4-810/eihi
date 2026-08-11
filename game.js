@@ -1,4 +1,4 @@
-
+﻿
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
 function imgPath(n) { return IMG_BASE + n; }
@@ -1050,25 +1050,34 @@ function startPreloader() {
     setInterval(gameLoop, 40);
   }
   var idx = 0;
-  function loadNext() {
-    if (idx >= total) { finish(); return; }
-    var url = urls[idx];
+  var CONCURRENT = 6;
+  var finished = false;
+  function loadOne() {
+    if (idx >= total) return;
+    var i = idx++;
+    var url = urls[i];
+    function done() {
+      loaded++;
+      update();
+      if (!finished && loaded >= total) { finished = true; finish(); }
+      else if (idx < total) { loadOne(); }
+    }
     if (url.indexOf(".mp3") !== -1) {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.responseType = "arraybuffer";
-      xhr.onload = function() { loaded++; idx++; update(); loadNext(); };
-      xhr.onerror = function() { loaded++; idx++; update(); loadNext(); };
+      xhr.onload = done;
+      xhr.onerror = done;
       xhr.send();
     } else {
       var img = new Image();
-      img.onload = function() { loaded++; idx++; update(); loadNext(); };
-      img.onerror = function() { loaded++; idx++; update(); loadNext(); };
+      img.onload = done;
+      img.onerror = done;
       img.src = url;
     }
   }
   update();
-  loadNext();
+  for (var c = 0; c < CONCURRENT; c++) { loadOne(); }
 }
 
 // ====== INIT ======
