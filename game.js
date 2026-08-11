@@ -1061,13 +1061,19 @@ function startPreloader() {
     setInterval(gameLoop, 40);
   }
   var idx = 0;
-  var CONCURRENT = 6;
+  var CONCURRENT = 4;
   var finished = false;
+  var TIMEOUT = 30000;
   function loadOne() {
     if (idx >= total) return;
     var i = idx++;
     var url = urls[i];
+    var timedOut = false;
+    var t = setTimeout(function() { timedOut = true; done(); }, TIMEOUT);
     function done() {
+      if (timedOut) return;
+      clearTimeout(t);
+      timedOut = true;
       loaded++;
       update();
       if (!finished && loaded >= total) { finished = true; finish(); }
