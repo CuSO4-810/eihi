@@ -909,13 +909,23 @@ var E = {
         h+='<div class="save-slot"><div class="slot-num">'+sl.label+'</div><div class="slot-info"><div class="slot-empty">空</div></div></div>';
       }
     }
-    h+='<div class="menu-hint">点击存档位进行'+(mode==="save"?"保存":"读取")+'</div></div>';
+    h+='<div class="menu-hint">点击存档位进行'+(mode==="save"?"保存":"读取")+'</div>';
+    h+='<button class="pause-btn" data-act="back">返回</button></div>';
     overlay.innerHTML=h; overlay.classList.remove("hidden");
     var s=this;
     overlay.querySelectorAll(".save-slot").forEach(function(b,idx){
       b.addEventListener("click",function(){
         if(mode==="save") s.doSaveSlot(idx+1);
         else s.doLoadSlot(idx+1);
+      });
+    });
+    overlay.querySelectorAll(".pause-btn").forEach(function(b){
+      b.addEventListener("click",function(){
+        if(b.getAttribute("data-act")==="back"){
+          s.showSaveMenu=false;
+          if(s.hasActiveGame){s.showPause=true;hideOverlay();s.render();}
+          else{s.goToTitle();}
+        }
       });
     });
   },
