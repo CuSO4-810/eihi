@@ -81,16 +81,21 @@ function playSFX(name) {
   });
 }
 
+function stopVoice() {
+  try { if (voiceSourceNode) { voiceSourceNode.stop(0); voiceSourceNode.disconnect(); } } catch(e) {}
+  voiceSourceNode = null;
+}
 function playVoice(name) {
   if (!audioCtx) return;
+  stopVoice();
   loadAudioBuf(VOICE_BASE + name, function(buf) {
     try {
-      var src = audioCtx.createBufferSource();
-      src.buffer = buf;
+      voiceSourceNode = audioCtx.createBufferSource();
+      voiceSourceNode.buffer = buf;
       var g = audioCtx.createGain();
       g.gain.value = 0.7;
-      src.connect(g); g.connect(audioCtx.destination);
-      src.start(0);
+      voiceSourceNode.connect(g); g.connect(audioCtx.destination);
+      voiceSourceNode.start(0);
     } catch(e) {}
   });
 }
