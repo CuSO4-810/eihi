@@ -671,7 +671,7 @@ var E = {
     this.fullText=ln.text; this.currentSpeaker=ln.speaker;
     this.currentColor=ln.color||COLS.DEF;
     this.charIndex=0; this.displayedText=""; this.dialogueFinished=false;
-    if(ln.charImg) this.charName=ln.charImg;
+    this.charName = ln.charImg || null;
     if(ln.voice) playVoice(ln.voice);
     this.render();
   },
