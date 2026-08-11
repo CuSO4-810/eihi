@@ -1012,13 +1012,18 @@ document.addEventListener("dblclick", function(e){e.preventDefault();});
 
 
 // ====== PRELOADER ======
+var _preloaderTotal = 0;
+var _preloaderLoaded = 0;
 function startPreloader() {
   var bar = document.getElementById("loading-bar-fill");
   var txt = document.getElementById("loading-text");
   var screen = document.getElementById("loading-screen");
-  var game = document.getElementById("game");
+  var gameEl = document.getElementById("game");
   var urls = [];
   var seen = {};
+
+  // -- Phase 1: scan --
+  txt.textContent = "正在扫描资源...";
   function add(url) { if (!seen[url]) { seen[url] = true; urls.push(url); } }
   for (var k in scenes) {
     var sc = scenes[k];
@@ -1046,26 +1051,50 @@ function startPreloader() {
   }
   for (var bk in SCENE_BGM) { add(BGM_BASE + SCENE_BGM[bk]); }
   add(SFX_BASE + "click.mp3");
+
   var total = urls.length;
+  _preloaderTotal = total;
+  if (total === 0) {
+    txt.textContent = "无资源需要加载，直接启动";
+    setTimeout(function() { screen.style.display = "none"; gameEl.style.display = "block"; bgImg.src = imgPath("教室.png"); bgImg.style.display = "block"; E.renderTitle(); setInterval(gameLoop, 40); }, 500);
+    return;
+  }
+
+  // -- Global safety timeout: 60s --
+  var globalTimeout = setTimeout(function() {
+    if (!finished) {
+      txt.textContent = "加载超时，强制启动 (" + loaded + "/" + total + ")";
+      finished = true; finish();
+    }
+  }, 60000);
+
+  // -- Phase 2: load --
   var loaded = 0;
+  _preloaderLoaded = 0;
   function update() {
+    _preloaderLoaded = loaded;
     bar.style.width = Math.round((loaded / total) * 100) + "%";
     txt.textContent = "正在加载... " + loaded + "/" + total;
   }
   function finish() {
+    clearTimeout(globalTimeout);
     screen.style.display = "none";
-    game.style.display = "block";
+    gameEl.style.display = "block";
     bgImg.src = imgPath("教室.png");
     bgImg.style.display = "block";
     E.renderTitle();
     setInterval(gameLoop, 40);
   }
+
   var idx = 0;
   var CONCURRENT = 4;
   var finished = false;
   var TIMEOUT = 30000;
   function loadOne() {
-    if (idx >= total) return;
+    if (idx >= total) {
+      txt.textContent = "等待剩余请求... " + loaded + "/" + total;
+      return;
+    }
     var i = idx++;
     var url = urls[i];
     var timedOut = false;
