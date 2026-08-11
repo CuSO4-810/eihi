@@ -1,6 +1,7 @@
 
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
+var _imgCache = {};
 function imgPath(n) { return IMG_BASE + n; }
 var BGM_BASE = "assets/bgm/";
 var SFX_BASE = "assets/sfx/";
@@ -28,20 +29,29 @@ function ensureAudio() {
 }
 
 var audioBufCache = {};
+var _preloadAudioBufs = {};
 function loadAudioBuf(url, cb) {
   if (audioBufCache[url]) { cb(audioBufCache[url]); return; }
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
-  xhr.responseType = "arraybuffer";
-  xhr.onload = function() {
+  function decodeAndCache(data) {
     if (!audioCtx) return;
-    audioCtx.decodeAudioData(xhr.response, function(buf) {
+    audioCtx.decodeAudioData(data, function(buf) {
       audioBufCache[url] = buf;
       cb(buf);
-    });
-  };
-  xhr.onerror = function() {};
-  xhr.send();
+    }, function() { /* decode error, fall through to XHR */ loadViaXHR(); });
+  }
+  function loadViaXHR() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.responseType = "arraybuffer";
+    xhr.onload = function() { decodeAndCache(xhr.response); };
+    xhr.onerror = function() {};
+    xhr.send();
+  }
+  if (_preloadAudioBufs[url]) {
+    decodeAndCache(_preloadAudioBufs[url].slice(0));
+  } else {
+    loadViaXHR();
+  }
 }
 
 function playBGM(name) {
@@ -1067,12 +1077,12 @@ function startPreloader() {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.responseType = "arraybuffer";
-      xhr.onload = done;
+      xhr.onload = function() { _preloadAudioBufs[url] = xhr.response; done(); };
       xhr.onerror = done;
       xhr.send();
     } else {
       var img = new Image();
-      img.onload = done;
+      img.onload = function() { _imgCache[url] = img; done(); };
       img.onerror = done;
       img.src = url;
     }
