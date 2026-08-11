@@ -10,7 +10,16 @@
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#081430" />
 </head>
+
 <body>
+<div id="diag" style="position:fixed;top:0;left:0;z-index:99999;background:#000;color:#0f0;padding:4px 8px;font:12px monospace">HTML OK</div>
+<script>
+document.getElementById("diag").textContent = "JS running...";
+window.onerror = function(m, s, l) {
+  document.getElementById("diag").textContent = "ERROR: " + m + " at " + s + ":" + l;
+};
+</script>
+
 <div id="loading-screen">
   <div class="loading-title">忧蓝回忆</div>
   <div id="loading-bar-bg"><div id="loading-bar-fill"></div></div>
@@ -42,7 +51,18 @@
   <div id="overlay" class="hidden"></div>
   <div id="notify" class="hidden"></div>
 </div>
-<script src="game.js?v=9"></script>
+<script>
+document.getElementById("diag").textContent = "loading game.js...";
+</script>
+<script src="game.js?v=10"></script>
+<script>
+document.getElementById("diag").textContent = "game.js loaded, starting...";
+if (typeof startPreloader === "function") {
+  document.getElementById("diag").textContent = "preloader found, should start";
+} else {
+  document.getElementById("diag").textContent = "ERROR: startPreloader not found!";
+}
+</script>
 <script>
 setTimeout(function(){
   var t = document.getElementById("loading-text");
