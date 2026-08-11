@@ -42,16 +42,18 @@
   <div id="overlay" class="hidden"></div>
   <div id="notify" class="hidden"></div>
 </div>
-<script src="game.js?v=6"></script>
+<script src="game.js?v=7"></script>
 <script>
 setTimeout(function(){
   var t = document.getElementById("loading-text");
   if (typeof startPreloader === "undefined") {
     t.textContent = "错误：game.js 未加载，请刷新";
-  } else if (!document.getElementById("game").style.display || document.getElementById("game").style.display === "none") {
-    t.textContent = "加载中... 如长时间无反应请刷新";
+  } else {
+    var bar = document.getElementById("loading-bar-fill");
+    var w = bar ? bar.style.width : "?";
+    t.textContent = "仍在加载... (" + w + ") 请耐心等待";
   }
-}, 8000);
+}, 12000);
 </script>
 <script>
 if ("serviceWorker" in navigator) {
