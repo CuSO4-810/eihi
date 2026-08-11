@@ -1,4 +1,4 @@
-﻿
+
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
 function imgPath(n) { return IMG_BASE + n; }
@@ -1078,19 +1078,23 @@ function startPreloader() {
   }
 
   var idx = 0;
+  var active = 0;
+  var PARALLEL = 6;
+
   function loadNext() {
-    if (idx >= total) { finish(); return; }
-    loadOne(urls[idx], function() {
-      loaded++;
-      updateProgress();
+    while (active < PARALLEL && idx < total) {
+      var i = idx;
       idx++;
-      setTimeout(loadNext, 10);
-    });
+      active++;
+      loadOne(urls[i], function() {
+        loaded++;
+        active--;
+        updateProgress();
+        if (loaded >= total) { finish(); }
+        else { loadNext(); }
+      });
+    }
   }
 
   updateProgress();
   loadNext();
-}
-
-// ====== INIT ======
-startPreloader();
