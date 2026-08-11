@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>忧蓝回忆</title>
+<link rel="stylesheet" href="game.css">
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#081430" />
+</head>
+<body>
+<div id="game">
+  <div id="transition-overlay" class="hidden"></div>
+  <div id="bg-layer"><img id="bg-img" src="" alt="" /></div>
+  <div id="bg-vignette"></div>
+  <div id="char-layer"><img id="char-img" src="" alt="" style="display:none" /></div>
+  <div id="top-bar">
+    <button class="top-btn" id="pause-btn" title="菜单">&#9776;</button>
+    <button class="top-btn" id="mute-btn" title="静音" onclick="toggleMute()">S</button>
+  </div>
+  <div id="affection-bar">
+    <span id="aff-yan">闫 0%</span>
+    <span id="aff-beauty">李 0%</span>
+    <span id="aff-fun">华 0%</span>
+    <span id="aff-14">14 0%</span>
+    <span id="aff-gos">gos 0%</span>
+  </div>
+  <div id="dialogue-box" style="display:none">
+    <div id="dialogue-accent"></div>
+    <div id="name-tag" style="display:none"></div>
+    <div id="dialogue-text"></div>
+    <div id="dialogue-hint">▼</div>
+  </div>
+  <div id="choices"></div>
+  <div id="overlay" class="hidden"></div>
+  <div id="notify" class="hidden"></div>
+</div>
+<script src="game.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").then(function() {
+    console.log("[PWA] Service Worker registered");
+  });
+}
+</script>
+</body>
+</html>
