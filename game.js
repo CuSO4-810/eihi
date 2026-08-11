@@ -1,4 +1,4 @@
-
+﻿
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
 function imgPath(n) { return IMG_BASE + n; }
@@ -104,21 +104,21 @@ function toggleMute() {
 }
 
 var SCENE_BGM = {
-  "start":"classroom.wav","intro":"classroom.wav",
-  "ch1_fourteen":"classroom.wav","ch1_fourteen_fun":"classroom.wav",
-  "ch1":"classroom.wav","ch1_yan":"classroom.wav","ch1_beauty":"classroom.wav","ch1_fun":"classroom.wav",
-  "ch2_fourteen":"hallway.wav","ch2_fourteen_fun":"hallway.wav",
-  "ch2":"hallway.wav","ch2_yan":"hallway.wav","ch2_beauty":"hallway.wav","ch2_fun":"hallway.wav",
-  "ch3_fourteen":"rooftop.wav","ch3_fourteen_fun":"rooftop.wav",
-  "ch3":"rooftop.wav","ch3_alone":"rooftop.wav","ch3_gos_chase":"rooftop.wav",
-  "ch3_yan":"rooftop.wav","ch3_beauty":"rooftop.wav","ch3_fun":"rooftop.wav",
-  "ch4_fourteen":"farewell.wav","ch4_fourteen_fun":"farewell.wav",
-  "ch4":"classroom.wav",
-  "gate":"farewell.wav","g_gos":"farewell.wav","g_yan":"farewell.wav",
-  "g_beauty":"farewell.wav","g_fun":"farewell.wav","g_group":"farewell.wav",
-  "end_check":"classroom.wav",
-  "end_yan":"farewell.wav","end_beauty":"farewell.wav","end_fun":"farewell.wav",
-  "end_gos":"farewell.wav","end_fourteen":"farewell.wav","end_friend":"farewell.wav"
+  "start":"classroom.mp3","intro":"classroom.mp3",
+  "ch1_fourteen":"classroom.mp3","ch1_fourteen_fun":"classroom.mp3",
+  "ch1":"classroom.mp3","ch1_yan":"classroom.mp3","ch1_beauty":"classroom.mp3","ch1_fun":"classroom.mp3",
+  "ch2_fourteen":"hallway.mp3","ch2_fourteen_fun":"hallway.mp3",
+  "ch2":"hallway.mp3","ch2_yan":"hallway.mp3","ch2_beauty":"hallway.mp3","ch2_fun":"hallway.mp3",
+  "ch3_fourteen":"rooftop.mp3","ch3_fourteen_fun":"rooftop.mp3",
+  "ch3":"rooftop.mp3","ch3_alone":"rooftop.mp3","ch3_gos_chase":"rooftop.mp3",
+  "ch3_yan":"rooftop.mp3","ch3_beauty":"rooftop.mp3","ch3_fun":"rooftop.mp3",
+  "ch4_fourteen":"farewell.mp3","ch4_fourteen_fun":"farewell.mp3",
+  "ch4":"classroom.mp3",
+  "gate":"farewell.mp3","g_gos":"farewell.mp3","g_yan":"farewell.mp3",
+  "g_beauty":"farewell.mp3","g_fun":"farewell.mp3","g_group":"farewell.mp3",
+  "end_check":"classroom.mp3",
+  "end_yan":"farewell.mp3","end_beauty":"farewell.mp3","end_fun":"farewell.mp3",
+  "end_gos":"farewell.mp3","end_fourteen":"farewell.mp3","end_friend":"farewell.mp3"
 };
 
 // ====== DATA CLASSES ======
@@ -149,14 +149,14 @@ scenes["start"] = new Scene("教室.png", null, "center", [
 ], null, "intro");
 
 function introLn(s) { var n = s.player_name; return [
-  new Line("闫宅君", "嘿"+n+"，高考完了有什么计划？要不要一起去唱歌？", YC, "yan_normal.png", "intro_yan_01.wav"),
-  new Line("闫宅君", "我都跟养胃他们说好了，就差你了！", YC, "yan_normal.png", "intro_yan_02.wav"),
+  new Line("闫宅君", "嘿"+n+"，高考完了有什么计划？要不要一起去唱歌？", YC, "yan_normal.png", "intro_yan_01.mp3"),
+  new Line("闫宅君", "我都跟养胃他们说好了，就差你了！", YC, "yan_normal.png", "intro_yan_02.mp3"),
   new Line(null, "闫宅君，资深老宅，平日里大家都叫他大佐。", NC),
   new Line("头花犯", n+"你别听他的，说不定人家想在家睡觉呢。", FC, "fun_normal.png"),
   new Line("头花犯", "不过说真的，来嘛来嘛，我负责搞笑，保证不冷场。", FC, "fun_normal.png"),
   new Line(null, "头花犯，班里的开心果，嘴贫但人不坏。", NC),
-  new Line("李美丽", "……你们太吵了。", BC, "beauty_normal.png", "intro_beauty_01.wav"),
-  new Line("李美丽", "不过"+n+"，毕业之后，确实该聚一聚。", BC, "beauty_normal.png", "intro_beauty_02.wav"),
+  new Line("李美丽", "……你们太吵了。", BC, "beauty_normal.png", "intro_beauty_01.mp3"),
+  new Line("李美丽", "不过"+n+"，毕业之后，确实该聚一聚。", BC, "beauty_normal.png", "intro_beauty_02.mp3"),
   new Line(null, "李美丽，学霸兼骚包，话少但句句都在G点上。", NC),
   new Line(null, "三个男生把我围在中间，你一言我一语。", NC),
   new Line(null, "——好像，被「包围」了。", NC),
@@ -195,12 +195,12 @@ scenes["ch1"] = new Scene("教室.png", null, "center", [
 ]; });
 
 scenes["ch1_yan"] = new Scene("教室.png", "yan_normal.png", "center", function(s) { var n = s.player_name; return [
-  new Line("闫宅君", n+"，你看起来心不在焉的。", YC, null, "yan03.wav"),
+  new Line("闫宅君", n+"，你看起来心不在焉的。", YC, null, "yan03.mp3"),
   new Line(null, "啊，没什么……就是觉得以后可能再也见不到大家了。", PC),
-  new Line("闫宅君", "说什么呢！大家永远是朋友，想见面随时约啊。", YC, null, "yan04.wav"),
-  new Line("闫宅君", "再说，你不想见我，我还想见你呢。", YC, null, "yan05.wav"),
+  new Line("闫宅君", "说什么呢！大家永远是朋友，想见面随时约啊。", YC, null, "yan04.mp3"),
+  new Line("闫宅君", "再说，你不想见我，我还想见你呢。", YC, null, "yan05.mp3"),
   new Line(null, "他说完自己也愣了一下，耳朵微微发红。", NC),
-  new Line("闫宅君", "呃，我是说……大家都是同学嘛。", YC, null, "yan06.wav"),
+  new Line("闫宅君", "呃，我是说……大家都是同学嘛。", YC, null, "yan06.mp3"),
   new Line(null, "（这人，意外的有点可爱。）", PC),
 ]; }, null, "ch2_fourteen");
 
@@ -259,13 +259,13 @@ scenes["ch2"] = new Scene("走廊.png", null, "center", [
 ]; });
 
 scenes["ch2_yan"] = new Scene("走廊.png", "yan_smile.png", "center", function(s) { var n = s.player_name; return [
-  new Line("闫宅君", n+"！过来一下。", YC, null, "yan07.wav"),
+  new Line("闫宅君", n+"！过来一下。", YC, null, "yan07.mp3"),
   new Line(null, "他把我拉到走廊角落，从口袋里掏出一个索尼克的小挂件。", NC),
-  new Line("闫宅君", "送你的。毕业礼物。", YC, null, "yan08.wav"),
+  new Line("闫宅君", "送你的。毕业礼物。", YC, null, "yan08.mp3"),
   new Line(null, "你自己买的？", PC),
-  new Line("闫宅君", "拼胶比赛赢了发的。我多要了一个。", YC, null, "yan09.wav"),
+  new Line("闫宅君", "拼胶比赛赢了发的。我多要了一个。", YC, null, "yan09.mp3"),
   new Line(null, "但我知道纪念品每人只有一个。他把自己的给了我。", NC),
-  new Line("闫宅君", "那个……"+n+"，以后有空来跟我一起拼胶吧。", YC, null, "yan10.wav"),
+  new Line("闫宅君", "那个……"+n+"，以后有空来跟我一起拼胶吧。", YC, null, "yan10.mp3"),
 ]; }, null, "ch3_fourteen");
 
 scenes["ch2_beauty"] = new Scene("走廊.png", "beauty_blush.png", "center", function(s) { return [
@@ -365,9 +365,9 @@ scenes["ch3_gos_chase"] = new Scene("天台.png", "gos_fursuit.png", "center", f
 ]; }, null, "ch4_fourteen");
 
 scenes["ch3_yan"] = new Scene("天台.png", "yan_smile.png", "center", function(s) { var n = s.player_name; return [
-  new Line("闫宅君", "来来来，"+n+"站我旁边！", YC, null, "yan11.wav"),
+  new Line("闫宅君", "来来来，"+n+"站我旁边！", YC, null, "yan11.mp3"),
   new Line(null, "闫宅君举着手机，半蹲着把大家框进镜头。", NC),
-  new Line("闫宅君", "三、二、一——茄子！", YC, null, "yan12.wav"),
+  new Line("闫宅君", "三、二、一——茄子！", YC, null, "yan12.mp3"),
   new Line(null, "后来我才注意到——合照里他站在我身后，笑得比谁都开心。", NC),
 ]; }, null, "ch4_fourteen");
 
@@ -452,9 +452,9 @@ scenes["g_gos"] = new Scene("校门.png", "gos_normal.png", "center", function(s
 ]; }, null, "end_check");
 
 scenes["g_yan"] = new Scene("校门.png", "yan_smile.png", "center", function(s) { var n = s.player_name; return [
-  new Line("闫宅君", n+"！等一下！", YC, null, "yan13.wav"),
+  new Line("闫宅君", n+"！等一下！", YC, null, "yan13.mp3"),
   new Line(null, "闫宅君从人群中跑出来，额头上有细密的汗珠。", NC),
-  new Line("闫宅君", "毕业露营，一起去吧。就我们俩。", YC, null, "yan14.wav"),
+  new Line("闫宅君", "毕业露营，一起去吧。就我们俩。", YC, null, "yan14.mp3"),
   new Line(null, "他说完立刻别过头去，耳朵红透了。", NC),
   new Line(null, "……好。", PC),
 ]; }, null, "end_check");
@@ -479,7 +479,7 @@ scenes["g_fun"] = new Scene("校门.png", "fun_laugh.png", "center", function(s)
 ]; }, null, "end_check");
 
 scenes["g_group"] = new Scene("校门.png", null, "center", [
-  new Line("闫宅君", "以后常联系啊！", YC, null, "yan15.wav"),
+  new Line("闫宅君", "以后常联系啊！", YC, null, "yan15.mp3"),
   new Line("李美丽", "保持联系。", BC),
   new Line("头花犯", "群聊不许退！", FC),
   new Line(null, "我看着他们，突然笑了。", NC),
@@ -691,7 +691,7 @@ var E = {
     this.showChoices=false; this.choices=[];
     choicesDiv.innerHTML="";
     this.flashAffection();
-    playSFX("click.wav");
+    playSFX("click.mp3");
     if(c.target) this.transitionTo(c.target);
   },
   transitionTo: function(l) {
@@ -743,7 +743,7 @@ var E = {
     this.pendingAchievements=[]; this.pendingHiddenCheck=false;
     this._currentBGM = null;
     hideOverlay(); dialogueBox.style.display="none";
-    choicesDiv.innerHTML=""; ensureAudio(); playBGM("classroom.wav"); this._currentBGM="classroom.wav"; this.loadStory();
+    choicesDiv.innerHTML=""; ensureAudio(); playBGM("classroom.mp3"); this._currentBGM="classroom.mp3"; this.loadStory();
   },
 
   openPause: function() {
@@ -981,7 +981,7 @@ document.addEventListener("click", function(e){
   if(e.target.closest("#choices")) return;
   if(e.target.closest("#pause-btn")) return;
   if(e.target.closest("#mute-btn")) return;
-  playSFX("click.wav");
+  playSFX("click.mp3");
   E.advance();
 });
 
@@ -1027,12 +1027,12 @@ function startPreloader() {
     }
     if (typeof lines === "function") {
       var src = lines.toString();
-      var re = /"([^"]+\.(png|wav))"/g;
+      var re = /"([^"]+\.(png|wav|mp3))"/g;
       var m;
       while ((m = re.exec(src)) !== null) {
         var name = m[1];
         if (name.indexOf("/") === -1) {
-          add((name.indexOf(".wav") !== -1 ? VOICE_BASE : IMG_BASE) + name);
+          add((name.indexOf(".mp3") !== -1 ? VOICE_BASE : IMG_BASE) + name);
         }
       }
     }
@@ -1041,7 +1041,7 @@ function startPreloader() {
   // BGM files
   for (var bk in SCENE_BGM) { add(BGM_BASE + SCENE_BGM[bk]); }
   // SFX
-  add(SFX_BASE + "click.wav");
+  add(SFX_BASE + "click.mp3");
 
   var total = urls.length;
   var loaded = 0;
@@ -1062,7 +1062,7 @@ function startPreloader() {
   }
 
   function loadOne(url, cb) {
-    if (url.indexOf(".wav") !== -1) {
+    if (url.indexOf(".mp3") !== -1) {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.responseType = "arraybuffer";
