@@ -1,7 +1,7 @@
 ﻿// 忧蓝回忆0.9.5 — Service Worker
 // 策略：安装时全量预缓存，之后永远从缓存读取（无更新逻辑）
 
-var CACHE_NAME = "ylhy-0.9.5-v5";
+var CACHE_NAME = "ylhy-0.9.5-v6";
 var FILES_TO_CACHE = [
   "/",
   "/index.html",
