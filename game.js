@@ -1,4 +1,4 @@
-﻿
+
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
 function imgPath(n) { return IMG_BASE + n; }
@@ -1000,10 +1000,97 @@ pauseBtn.addEventListener("click", function(e){
 
 document.addEventListener("dblclick", function(e){e.preventDefault();});
 
+
+// ====== PRELOADER ======
+function startPreloader() {
+  var bar = document.getElementById("loading-bar-fill");
+  var txt = document.getElementById("loading-text");
+  var screen = document.getElementById("loading-screen");
+  var game = document.getElementById("game");
+
+  var urls = [];
+  var seen = {};
+  function add(url) { if (!seen[url]) { seen[url] = true; urls.push(url); } }
+
+  // Scan all scenes for assets
+  for (var k in scenes) {
+    var sc = scenes[k];
+    if (sc.bg) add(IMG_BASE + sc.bg);
+    if (sc.charImg) add(IMG_BASE + sc.charImg);
+    var lines = sc.lines;
+    if (Array.isArray(lines)) {
+      for (var i = 0; i < lines.length; i++) {
+        var l = lines[i];
+        if (l.charImg) add(IMG_BASE + l.charImg);
+        if (l.voice) add(VOICE_BASE + l.voice);
+      }
+    }
+    if (typeof lines === "function") {
+      var src = lines.toString();
+      var re = /"([^"]+\.(png|wav))"/g;
+      var m;
+      while ((m = re.exec(src)) !== null) {
+        var name = m[1];
+        if (name.indexOf("/") === -1) {
+          add((name.indexOf(".wav") !== -1 ? VOICE_BASE : IMG_BASE) + name);
+        }
+      }
+    }
+  }
+
+  // BGM files
+  for (var bk in SCENE_BGM) { add(BGM_BASE + SCENE_BGM[bk]); }
+  // SFX
+  add(SFX_BASE + "click.wav");
+
+  var total = urls.length;
+  var loaded = 0;
+
+  function updateProgress() {
+    var pct = Math.round((loaded / total) * 100);
+    bar.style.width = pct + "%";
+    txt.textContent = "正在加载... " + loaded + "/" + total;
+  }
+
+  function finish() {
+    screen.style.display = "none";
+    game.style.display = "block";
+    bgImg.src = imgPath("教室.png");
+    bgImg.style.display = "block";
+    E.renderTitle();
+    setInterval(gameLoop, 40);
+  }
+
+  function loadOne(url, cb) {
+    if (url.indexOf(".wav") !== -1) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", url, true);
+      xhr.responseType = "arraybuffer";
+      xhr.onload = function() { cb(); };
+      xhr.onerror = function() { cb(); };
+      xhr.send();
+    } else {
+      var img = new Image();
+      img.onload = function() { cb(); };
+      img.onerror = function() { cb(); };
+      img.src = url;
+    }
+  }
+
+  var idx = 0;
+  function loadNext() {
+    if (idx >= total) { finish(); return; }
+    loadOne(urls[idx], function() {
+      loaded++;
+      updateProgress();
+      idx++;
+      setTimeout(loadNext, 10);
+    });
+  }
+
+  updateProgress();
+  loadNext();
+}
+
 // ====== INIT ======
-bgImg.src=imgPath("教室.png");
-bgImg.style.display="block";
-E.renderTitle();
-
-setInterval(gameLoop, 40);
-
+startPreloader();
