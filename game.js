@@ -1,4 +1,4 @@
-﻿
+
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
 function imgPath(n) { return IMG_BASE + n; }
@@ -1014,7 +1014,8 @@ function startPreloader() {
     var sc = scenes[k];
     if (sc.bg) add(IMG_BASE + sc.bg);
     if (sc.charImg) add(IMG_BASE + sc.charImg);
-    var lines = sc.lines;
+    var lines = sc._lines;
+    if (!lines) continue;
     if (Array.isArray(lines)) {
       for (var i = 0; i < lines.length; i++) {
         if (lines[i].charImg) add(IMG_BASE + lines[i].charImg);
