@@ -1115,4 +1115,11 @@ function startPreloader() {
 }
 
 // ====== INIT ======
-startPreloader();
+try { startPreloader(); } catch(e) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('game').style.display = 'block';
+  bgImg.src = imgPath('教室.png');
+  bgImg.style.display = 'block';
+  E.renderTitle();
+  setInterval(gameLoop, 40);
+}
