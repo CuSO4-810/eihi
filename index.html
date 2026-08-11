@@ -42,7 +42,17 @@
   <div id="overlay" class="hidden"></div>
   <div id="notify" class="hidden"></div>
 </div>
-<script src="game.js?v=5"></script>
+<script src="game.js?v=6"></script>
+<script>
+setTimeout(function(){
+  var t = document.getElementById("loading-text");
+  if (typeof startPreloader === "undefined") {
+    t.textContent = "错误：game.js 未加载，请刷新";
+  } else if (!document.getElementById("game").style.display || document.getElementById("game").style.display === "none") {
+    t.textContent = "加载中... 如长时间无反应请刷新";
+  }
+}, 8000);
+</script>
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").then(function() {
