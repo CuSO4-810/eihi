@@ -1,7 +1,6 @@
-
+﻿
 // ====== CONSTANTS ======
 var IMG_BASE = "assets/";
-var _imgCache = {};
 function imgPath(n) { return IMG_BASE + n; }
 var BGM_BASE = "assets/bgm/";
 var SFX_BASE = "assets/sfx/";
@@ -29,29 +28,20 @@ function ensureAudio() {
 }
 
 var audioBufCache = {};
-var _preloadAudioBufs = {};
 function loadAudioBuf(url, cb) {
   if (audioBufCache[url]) { cb(audioBufCache[url]); return; }
-  function decodeAndCache(data) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  xhr.responseType = "arraybuffer";
+  xhr.onload = function() {
     if (!audioCtx) return;
-    audioCtx.decodeAudioData(data, function(buf) {
+    audioCtx.decodeAudioData(xhr.response, function(buf) {
       audioBufCache[url] = buf;
       cb(buf);
-    }, function() { /* decode error, fall through to XHR */ loadViaXHR(); });
-  }
-  function loadViaXHR() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "arraybuffer";
-    xhr.onload = function() { decodeAndCache(xhr.response); };
-    xhr.onerror = function() {};
-    xhr.send();
-  }
-  if (_preloadAudioBufs[url]) {
-    decodeAndCache(_preloadAudioBufs[url].slice(0));
-  } else {
-    loadViaXHR();
-  }
+    });
+  };
+  xhr.onerror = function() {};
+  xhr.send();
 }
 
 function playBGM(name) {
@@ -1012,18 +1002,13 @@ document.addEventListener("dblclick", function(e){e.preventDefault();});
 
 
 // ====== PRELOADER ======
-var _preloaderTotal = 0;
-var _preloaderLoaded = 0;
 function startPreloader() {
   var bar = document.getElementById("loading-bar-fill");
   var txt = document.getElementById("loading-text");
   var screen = document.getElementById("loading-screen");
-  var gameEl = document.getElementById("game");
+  var game = document.getElementById("game");
   var urls = [];
   var seen = {};
-
-  // -- Phase 1: scan --
-  txt.textContent = "正在扫描资源...";
   function add(url) { if (!seen[url]) { seen[url] = true; urls.push(url); } }
   for (var k in scenes) {
     var sc = scenes[k];
@@ -1051,73 +1036,43 @@ function startPreloader() {
   }
   for (var bk in SCENE_BGM) { add(BGM_BASE + SCENE_BGM[bk]); }
   add(SFX_BASE + "click.mp3");
-
   var total = urls.length;
-  _preloaderTotal = total;
-  if (total === 0) {
-    txt.textContent = "无资源需要加载，直接启动";
-    setTimeout(function() { screen.style.display = "none"; gameEl.style.display = "block"; bgImg.src = imgPath("教室.png"); bgImg.style.display = "block"; E.renderTitle(); setInterval(gameLoop, 40); }, 500);
-    return;
-  }
-
-  // -- Global safety timeout: 60s --
-  var globalTimeout = setTimeout(function() {
-    if (!finished) {
-      txt.textContent = "加载超时，强制启动 (" + loaded + "/" + total + ")";
-      finished = true; finish();
-    }
-  }, 60000);
-
-  // -- Phase 2: load --
   var loaded = 0;
-  _preloaderLoaded = 0;
   function update() {
-    _preloaderLoaded = loaded;
     bar.style.width = Math.round((loaded / total) * 100) + "%";
     txt.textContent = "正在加载... " + loaded + "/" + total;
   }
   function finish() {
-    clearTimeout(globalTimeout);
     screen.style.display = "none";
-    gameEl.style.display = "block";
+    game.style.display = "block";
     bgImg.src = imgPath("教室.png");
     bgImg.style.display = "block";
     E.renderTitle();
     setInterval(gameLoop, 40);
   }
-
+  if (total === 0) { finish(); return; }
   var idx = 0;
-  var CONCURRENT = 4;
-  var finished = false;
-  var TIMEOUT = 30000;
+  var CONCURRENT = 6;
   function loadOne() {
-    if (idx >= total) {
-      txt.textContent = "等待剩余请求... " + loaded + "/" + total;
-      return;
-    }
+    if (idx >= total) return;
     var i = idx++;
     var url = urls[i];
-    var timedOut = false;
-    var t = setTimeout(function() { done(); }, TIMEOUT);
     function done() {
-      if (timedOut) return;
-      clearTimeout(t);
-      timedOut = true;
       loaded++;
       update();
-      if (!finished && loaded >= total) { finished = true; finish(); }
-      else if (idx < total) { loadOne(); }
+      if (loaded >= total) { finish(); }
+      else { loadOne(); }
     }
     if (url.indexOf(".mp3") !== -1) {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.responseType = "arraybuffer";
-      xhr.onload = function() { _preloadAudioBufs[url] = xhr.response; done(); };
+      xhr.onload = done;
       xhr.onerror = done;
       xhr.send();
     } else {
       var img = new Image();
-      img.onload = function() { _imgCache[url] = img; done(); };
+      img.onload = done;
       img.onerror = done;
       img.src = url;
     }
