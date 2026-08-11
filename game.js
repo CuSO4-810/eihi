@@ -14,6 +14,7 @@ var audioCtx = null;
 var bgmGainNode = null;
 var currentBGMName = null;
 var bgmSourceNode = null;
+var voiceSourceNode = null;
 var bgmMuted = false;
 
 function ensureAudio() {
@@ -87,7 +88,6 @@ function stopVoice() {
 }
 function playVoice(name) {
   if (!audioCtx) return;
-  stopVoice();
   loadAudioBuf(VOICE_BASE + name, function(buf) {
     try {
       voiceSourceNode = audioCtx.createBufferSource();
@@ -677,7 +677,7 @@ var E = {
     this.currentColor=ln.color||COLS.DEF;
     this.charIndex=0; this.displayedText=""; this.dialogueFinished=false;
     if(ln.charImg) this.charName=ln.charImg;
-    if(ln.voice) playVoice(ln.voice);
+    if(ln.voice){stopVoice();playVoice(ln.voice);}
     this.render();
   },
   showChoicesForScene: function() {
