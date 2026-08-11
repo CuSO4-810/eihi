@@ -1112,3 +1112,7 @@ function startPreloader() {
 
   updateProgress();
   loadNext();
+}
+
+// ====== INIT ======
+startPreloader();
