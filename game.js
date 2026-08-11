@@ -671,7 +671,7 @@ var E = {
     this.fullText=ln.text; this.currentSpeaker=ln.speaker;
     this.currentColor=ln.color||COLS.DEF;
     this.charIndex=0; this.displayedText=""; this.dialogueFinished=false;
-    this.charName = ln.charImg || null;
+    if(ln.charImg) this.charName=ln.charImg;
     if(ln.voice) playVoice(ln.voice);
     this.render();
   },
@@ -1007,16 +1007,9 @@ function startPreloader() {
   var txt = document.getElementById("loading-text");
   var screen = document.getElementById("loading-screen");
   var game = document.getElementById("game");
-
-  var preloadBin = document.createElement("div");
-  preloadBin.style.display = "none";
-  document.body.appendChild(preloadBin);
-
   var urls = [];
   var seen = {};
   function add(url) { if (!seen[url]) { seen[url] = true; urls.push(url); } }
-
-  // Scan all scenes for assets
   for (var k in scenes) {
     var sc = scenes[k];
     if (sc.bg) add(IMG_BASE + sc.bg);
@@ -1024,14 +1017,13 @@ function startPreloader() {
     var lines = sc.lines;
     if (Array.isArray(lines)) {
       for (var i = 0; i < lines.length; i++) {
-        var l = lines[i];
-        if (l.charImg) add(IMG_BASE + l.charImg);
-        if (l.voice) add(VOICE_BASE + l.voice);
+        if (lines[i].charImg) add(IMG_BASE + lines[i].charImg);
+        if (lines[i].voice) add(VOICE_BASE + lines[i].voice);
       }
     }
     if (typeof lines === "function") {
       var src = lines.toString();
-      var re = /"([^"]+\.(png|wav|mp3))"/g;
+      var re = /"([^"]+\.(png|mp3))"/g;
       var m;
       while ((m = re.exec(src)) !== null) {
         var name = m[1];
@@ -1041,23 +1033,15 @@ function startPreloader() {
       }
     }
   }
-
-  // BGM files
   for (var bk in SCENE_BGM) { add(BGM_BASE + SCENE_BGM[bk]); }
-  // SFX
   add(SFX_BASE + "click.mp3");
-
   var total = urls.length;
   var loaded = 0;
-
-  function updateProgress() {
-    var pct = Math.round((loaded / total) * 100);
-    bar.style.width = pct + "%";
+  function update() {
+    bar.style.width = Math.round((loaded / total) * 100) + "%";
     txt.textContent = "正在加载... " + loaded + "/" + total;
   }
-
   function finish() {
-    preloadBin.remove();
     screen.style.display = "none";
     game.style.display = "block";
     bgImg.src = imgPath("教室.png");
@@ -1065,61 +1049,27 @@ function startPreloader() {
     E.renderTitle();
     setInterval(gameLoop, 40);
   }
-
-  function loadOne(url, cb) {
+  var idx = 0;
+  function loadNext() {
+    if (idx >= total) { finish(); return; }
+    var url = urls[idx];
     if (url.indexOf(".mp3") !== -1) {
-      ensureAudio();
-      if (!audioCtx) { cb(); return; }
-      if (audioBufCache[url]) { cb(); return; }
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
       xhr.responseType = "arraybuffer";
-      xhr.onload = function() {
-        audioCtx.decodeAudioData(xhr.response, function(buf) {
-          audioBufCache[url] = buf;
-          cb();
-        }, function() { cb(); });
-      };
-      xhr.onerror = function() { cb(); };
+      xhr.onload = function() { loaded++; idx++; update(); loadNext(); };
+      xhr.onerror = function() { loaded++; idx++; update(); loadNext(); };
       xhr.send();
     } else {
-      var img = document.createElement("img");
-      img.onload = function() { cb(); };
-      img.onerror = function() { cb(); };
+      var img = new Image();
+      img.onload = function() { loaded++; idx++; update(); loadNext(); };
+      img.onerror = function() { loaded++; idx++; update(); loadNext(); };
       img.src = url;
-      preloadBin.appendChild(img);
     }
   }
-
-  var idx = 0;
-  var active = 0;
-  var PARALLEL = 6;
-
-  function loadNext() {
-    while (active < PARALLEL && idx < total) {
-      var i = idx;
-      idx++;
-      active++;
-      loadOne(urls[i], function() {
-        loaded++;
-        active--;
-        updateProgress();
-        if (loaded >= total) { finish(); }
-        else { loadNext(); }
-      });
-    }
-  }
-
-  updateProgress();
+  update();
   loadNext();
 }
 
 // ====== INIT ======
-try { startPreloader(); } catch(e) {
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('game').style.display = 'block';
-  bgImg.src = imgPath('教室.png');
-  bgImg.style.display = 'block';
-  E.renderTitle();
-  setInterval(gameLoop, 40);
-}
+startPreloader();
